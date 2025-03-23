@@ -1,19 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import AdminDashboard from './components/AdminDashboard'
+import { useState } from 'react';
+import './App.css';
+import AdminDashboard from './components/AdminDashboard';
+import LoginForm from './components/Login';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    // Simulate authentication (replace with actual auth logic)
+    setIsLoggedIn(true);
+  };
 
   return (
-    <>
-      <div>
-        <AdminDashboard />
-      </div>
-    </>
-  )
+    <div>
+      {isLoggedIn ? <AdminDashboard /> : <LoginForm onLogin={handleLogin} />}
+    </div>
+  );
 }
 
-export default App
+export default App;
