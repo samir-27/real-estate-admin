@@ -28,14 +28,17 @@ const AdminDashboard = () => {
     .catch((error) => console.error("Error fetching sellers:", error));
   }, []);
 
-  const deleteProperty = (id) => {
-    console.log("Deleting property", id);
+  const deleteItem = (url, id, setter) => {
+    fetch(`${url}/${id}`, { method: "DELETE" })
+      .then((response) => {
+        if (response.ok) {
+          setter((prevItems) => prevItems.filter((item) => item._id !== id));
+        } else {
+          console.error("Failed to delete");
+        }
+      })
+      .catch((error) => console.error("Error deleting:", error));
   };
-
-  const deleteUser = (id) => {
-    console.log("Deleting user", id);
-  };
-
   return (
     <div className="flex h-screen">
       <aside className="w-64 bg-gray-800 text-white p-6">
@@ -85,7 +88,7 @@ const AdminDashboard = () => {
                         View
                       </button>
                       <button 
-                        onClick={() => deleteProperty(property._id)}
+                        onClick={() => deleteItem("http://localhost:3000/api/v1/property/deleteproperty", property._id, setProperties)}
                         className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
                       >
                         <FaTrash size={16} />
@@ -140,7 +143,7 @@ const AdminDashboard = () => {
                         View
                       </button>
                       <button 
-                        onClick={() => deleteUser(buyer._id)}
+                        onClick={() => deleteItem("http://localhost:3000/api/v1/buyer", buyer._id, setBuyers)}
                         className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
                       >
                         <FaTrash size={16} />
@@ -190,6 +193,12 @@ const AdminDashboard = () => {
                         onClick={() => setSelectedSeller(seller)}
                       >
                         View
+                      </button>
+                      <button 
+                        onClick={() => deleteItem("http://localhost:3000/api/v1/seller", seller._id, setSellers)}
+                        className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
+                      >
+                        <FaTrash size={16} />
                       </button>
                     </td>
                   </tr>
