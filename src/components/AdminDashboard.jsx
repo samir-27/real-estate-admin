@@ -5,9 +5,11 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("properties");
   const [properties, setProperties] = useState([]);
   const [buyers, setBuyers] = useState([]);
+  const [sellers, setSellers] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [selectedBuyer, setSelectedBuyer] = useState(null);
-
+  const [selectedSeller, setSelectedSeller] = useState(null);
+  
   useEffect(() => {
     fetch("http://localhost:3000/api/v1/property/getallproperties")
       .then((response) => response.json())
@@ -18,6 +20,12 @@ const AdminDashboard = () => {
       .then((response) => response.json())
       .then((data) => setBuyers(data))
       .catch((error) => console.error("Error fetching buyers:", error));
+
+
+    fetch("http://localhost:3000/api/v1/sellers")
+    .then((response) => response.json())
+    .then((data) => setSellers(data))
+    .catch((error) => console.error("Error fetching sellers:", error));
   }, []);
 
   const deleteProperty = (id) => {
@@ -44,6 +52,12 @@ const AdminDashboard = () => {
             className={`flex items-center gap-2 p-2 rounded ${activeTab === "users" ? "bg-gray-700" : "hover:bg-gray-700"}`}
           >
             <FaUsers /> Users
+          </button>
+          <button 
+            onClick={() => setActiveTab("sellers")} 
+            className={`flex items-center gap-2 p-2 rounded ${activeTab === "sellers" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+          >
+            <FaBuilding /> Sellers
           </button>
         </nav>
       </aside>
@@ -152,6 +166,52 @@ const AdminDashboard = () => {
               <p><strong>Phone:</strong> {selectedBuyer.phone}</p>
               <p><strong>City:</strong> {selectedBuyer.city}, {selectedBuyer.state}</p>
               <p><strong>Pin Code:</strong> {selectedBuyer.pinCode}</p>
+            </div>
+          </div>
+        )}
+
+{activeTab === "sellers" && (
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4">Sellers</h2>
+            <table className="w-full border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border p-2">Name</th>
+                  <th className="border p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sellers.map((seller) => (
+                  <tr key={seller._id} className="border">
+                    <td className="border p-2">{seller.name}</td>
+                    <td className="border p-2 text-center">
+                      <button 
+                        className="bg-blue-500 text-white p-1 rounded hover:bg-blue-600 mr-2"
+                        onClick={() => setSelectedSeller(seller)}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {selectedSeller && (
+          <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">{selectedSeller.name}</h2>
+                <button onClick={() => setSelectedSeller(null)} className="text-gray-500 hover:text-gray-700">
+                  <FaTimes size={20} />
+                </button>
+              </div>
+              <p><strong>Email:</strong> {selectedSeller.email}</p>
+              <p><strong>Phone:</strong> {selectedSeller.phone}</p>
+              <p><strong>City:</strong> {selectedSeller.city}, {selectedSeller.state}</p>
+              <p><strong>Pin Code:</strong> {selectedSeller.pinCode}</p>
             </div>
           </div>
         )}
